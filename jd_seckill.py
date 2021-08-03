@@ -80,10 +80,13 @@ class Timer(object):
         从京东服务器获取时间毫秒
         :return:
         """
-        url = 'https://a.jd.com//ajax/queryServerData.html'
-        ret = requests.get(url).text
-        js = json.loads(ret)
-        return int(js["serverTime"])
+        url = 'https://api.m.jd.com/client.action?functionId=queryMaterialProducts&client=wh5'
+        resp = requests.get(url)
+        time = int(json.loads(resp.text)["currentTime2"])
+        if resp.status_code != 200:
+            logger.error("从京东服务器获取时间出错 状态码 :%d " % (resp.status_code))
+        time = int(json.loads(resp.text)["currentTime2"])
+        return time
 
     def local_time(self):
         """
